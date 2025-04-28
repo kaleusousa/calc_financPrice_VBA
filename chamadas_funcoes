@@ -1,0 +1,96 @@
+Sub executarSimulador()
+
+    Dim wsBase As Worksheet
+    Dim wsDados As Worksheet
+    Dim ultimaParcela As Integer
+    
+    Set wsBase = ThisWorkbook.Sheets("Resumo")
+    Set wsDados = ThisWorkbook.Sheets("Simulador")
+    
+    ultimaParcela = wsBase.Range("C10").Value
+    Application.ScreenUpdating = False
+        
+    ' Limpar dados
+    wsDados.Cells.Clear
+    
+    ' Informar cabeçalho
+    Funcoes.cabecalhoEstimativa wsDados
+    
+    'Calcular parcelas
+    Funcoes.parcelasSimulador wsBase, wsDados, ultimaParcela
+
+    'Formatação do dados
+    Call Funcoes.formataTabela(Sheets("Resumo"), Sheets("Simulador"), ultimaParcela)
+
+    Application.ScreenUpdating = True
+    
+End Sub
+
+Sub executarEfetivo()
+
+    Dim wsBase As Worksheet
+    Dim wsDados As Worksheet
+    Dim ultimaParcela As Integer
+    
+    Set wsBase = ThisWorkbook.Sheets("Resumo")
+    Set wsDados = ThisWorkbook.Sheets("Efetivo")
+    
+    ultimaParcela = wsBase.Range("H10").Value
+    Application.ScreenUpdating = False
+        
+    ' Limpar dados
+    wsDados.Cells.Clear
+    
+    ' Informar cabeçalho
+    Funcoes.cabecalhoEstimativa wsDados
+    
+    'Calcular parcelas
+    Funcoes.parcelasEfetivo wsBase, wsDados, ultimaParcela
+
+    'Formatação do dados
+    Call Funcoes.formataTabela(Sheets("Resumo"), Sheets("Efetivo"), ultimaParcela)
+    
+    If wsBase.Range("I12").Value <> "" Then
+        MsgBox "O valor a Prestação Definida é muito baixa, valor foi alterado para " & Format(wsBase.Range("I12").Value, "#,##0.00") & "! Rever valor.", vbInformation
+    Else
+    End If
+    
+    MsgBox "Por gentileza, revisar os valores de Seguro e Administração na aba 'Efetivo'!", vbInformation
+
+    Application.ScreenUpdating = True
+    
+End Sub
+
+
+Sub executarRealizado()
+
+    Dim wsBase As Worksheet
+    Dim wsDados As Worksheet
+    Dim ultimaParcela As Integer
+    Dim wsPagto As Worksheet
+    
+    Set wsBase = ThisWorkbook.Sheets("Resumo")
+    Set wsDados = ThisWorkbook.Sheets("Realizado")
+    Set wsPagto = ThisWorkbook.Sheets("Pagamento")
+        
+    ultimaParcela = wsBase.Range("M10").Value
+    Application.ScreenUpdating = False
+        
+    ' Limpar dados
+    wsDados.Cells.Clear
+    
+    ' Informar cabeçalho
+    Funcoes.cabecalhoEstimativa wsDados
+    wsDados.Cells(2, 9).Value = "Correção Monetária"
+    
+    'Calcular parcelas
+    Funcoes.parcelasRealizado wsBase, wsDados, ultimaParcela, wsPagto
+
+    'Formatação do dados
+    ultimaParcela = wsBase.Range("M10").Value
+    Call Funcoes.formataTabela(Sheets("Resumo"), Sheets("Realizado"), ultimaParcela)
+    
+    Application.ScreenUpdating = True
+    
+End Sub
+
